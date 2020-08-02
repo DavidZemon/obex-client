@@ -1,0 +1,6 @@
+<ul>
+  <li *ngFor="let e of this.tree">
+    {{ e.name }}<span *ngIf="e.type === 'FOLDER'">/</span>
+    <app-tree [tree]="e.children" *ngIf="e.type === 'FOLDER'"></app-tree>
+  </li>
+</ul>
