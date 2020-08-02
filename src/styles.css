@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+.obex-tree ul, .obex-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
