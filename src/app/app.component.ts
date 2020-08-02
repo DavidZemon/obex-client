@@ -10,8 +10,9 @@ export enum EntryType {
 export interface TreeEntry {
   name: string;
   type: EntryType;
-  size: number;
-  children: TreeEntry[];
+  size?: number;
+  children?: TreeEntry[];
+  target?: string;
 }
 
 @Component({
