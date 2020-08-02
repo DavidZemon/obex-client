@@ -10,6 +10,7 @@ export enum EntryType {
 
 export interface TreeEntry {
   name: string;
+  fullPath: string;
   type: EntryType;
   size?: number;
   children?: TreeEntry[];
