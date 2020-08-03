@@ -7,7 +7,7 @@
       <li class="mat-tree-node">
         <!-- use a disabled button to provide padding for tree leaf -->
         <button mat-icon-button disabled></button>
-        {{node.name}}&nbsp;<a [href]="'/api/' + node.fullPath"><mat-icon>cloud_download</mat-icon></a>
+        {{node.name}}&nbsp;<a [href]="getDownloadPath(node)"><mat-icon>cloud_download</mat-icon></a>
       </li>
     </mat-tree-node>
     <!-- This is the tree node template for expandable nodes -->
@@ -19,7 +19,7 @@
               {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
           </button>
-          {{node.name}}&nbsp;<a [href]="'/api/' + node.fullPath + '.zip'"><mat-icon>cloud_download</mat-icon></a>
+          {{node.name}}&nbsp;<a [href]="getDownloadPath(node)"><mat-icon>cloud_download</mat-icon></a>
         </div>
         <ul *ngIf="treeControl.isExpanded(node)">
           <ng-container matTreeNodeOutlet></ng-container>
