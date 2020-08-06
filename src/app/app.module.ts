@@ -11,9 +11,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {TreeComponent} from './tree/tree.component';
 import {PreviewComponent} from './preview/preview.component';
-import { HomeComponent } from './home/home.component';
+import {HomeComponent} from './home/home.component';
 import {RouterModule} from '@angular/router';
 import {AppRoutingModule} from './app-routing.module';
+import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {AppRoutingModule} from './app-routing.module';
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
+    HighlightModule,
     HttpClientModule,
     MatButtonModule,
     MatExpansionModule,
@@ -34,7 +36,14 @@ import {AppRoutingModule} from './app-routing.module';
     NgbModule,
     RouterModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        fullLibraryLoader: () => import('highlight.js'),
+      }
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

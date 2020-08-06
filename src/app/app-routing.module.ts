@@ -5,7 +5,7 @@ import {PreviewComponent} from './preview/preview.component';
 
 const routes: Routes = [
   {
-    path: 'home',
+    path: 'tree',
     component: HomeComponent
   },
   {
@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/home'
+    redirectTo: '/tree'
   }
 ];
 
