@@ -9,10 +9,12 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { TreeComponent } from './tree/tree.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    TreeComponent,
   ],
   imports: [
     BrowserAnimationsModule,
