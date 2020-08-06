@@ -35,7 +35,7 @@ const sortTreeEntry = (lhs: TreeEntry, rhs: TreeEntry): number => {
 export class TreeComponent implements OnInit {
   tree: TreeEntry[] = [];
 
-  treeControl = new NestedTreeControl<TreeEntry>(node => node.children);
+  readonly treeControl = new NestedTreeControl<TreeEntry>(node => node.children);
 
   private static sortTree(tree: TreeEntry[]): void {
     tree.sort(sortTreeEntry);
@@ -46,18 +46,20 @@ export class TreeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.tree = await this.client.get('/api/tree').toPromise() as TreeEntry[];
-    TreeComponent.sortTree(this.tree);
+    TreeComponent.sortTree(this.tree = await this.client.get<TreeEntry[]>('/api/tree').toPromise());
   }
 
   hasChild(_: number, entry: TreeEntry): boolean {
     return !!entry.children;
   }
 
+  getEncodedFullPath(entry: TreeEntry): string {
+    return encodeURI(entry.fullPath);
+  }
+
   getDownloadPath(entry: TreeEntry): string {
     const suffix = entry.type === EntryType.FOLDER ? '.zip' : '';
-    const urlEncodedPath = encodeURI(entry.fullPath);
-    return `/api/downloads/${urlEncodedPath}${suffix}`;
+    return `/api/downloads/${(this.getEncodedFullPath(entry))}${suffix}`;
   }
 
 }

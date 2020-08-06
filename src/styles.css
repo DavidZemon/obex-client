@@ -1,8 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import '~highlight.js/styles/github.css';
 
 .obex-tree ul, .obex-tree li {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
+}
+
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
 }
