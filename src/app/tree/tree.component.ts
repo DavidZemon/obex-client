@@ -10,8 +10,8 @@ export enum EntryType {
 
 export interface TreeEntry {
   name: string;
-  fullPath: string;
-  type: EntryType;
+  full_path: string;
+  entry_type: EntryType;
   size?: number;
   children?: TreeEntry[];
   target?: string;
@@ -19,9 +19,9 @@ export interface TreeEntry {
 
 
 const sortTreeEntry = (lhs: TreeEntry, rhs: TreeEntry): number => {
-  if (lhs.type === rhs.type || (lhs.type !== EntryType.FOLDER && rhs.type !== EntryType.FOLDER)) {
+  if (lhs.entry_type === rhs.entry_type || (lhs.entry_type !== EntryType.FOLDER && rhs.entry_type !== EntryType.FOLDER)) {
     return lhs.name.localeCompare(rhs.name);
-  } else if (lhs.type === EntryType.FOLDER) {
+  } else if (lhs.entry_type === EntryType.FOLDER) {
     return -1;
   } else {
     return 1;
@@ -39,14 +39,14 @@ export class TreeComponent implements OnInit {
 
   private static sortTree(tree: TreeEntry[]): void {
     tree.sort(sortTreeEntry);
-    tree.filter(e => e.type === EntryType.FOLDER).forEach(e => TreeComponent.sortTree(e.children));
+    tree.filter(e => e.entry_type === EntryType.FOLDER).forEach(e => TreeComponent.sortTree(e.children));
   }
 
   constructor(private readonly client: HttpClient) {
   }
 
   async ngOnInit(): Promise<void> {
-    TreeComponent.sortTree(this.tree = await this.client.get<TreeEntry[]>('/api/tree').toPromise());
+    TreeComponent.sortTree(this.tree = await this.client.get<TreeEntry[]>('/api/tree/').toPromise());
   }
 
   hasChild(_: number, entry: TreeEntry): boolean {
@@ -54,11 +54,11 @@ export class TreeComponent implements OnInit {
   }
 
   getEncodedFullPath(entry: TreeEntry): string {
-    return encodeURI(entry.fullPath);
+    return encodeURI(entry.full_path);
   }
 
   getDownloadPath(entry: TreeEntry): string {
-    const suffix = entry.type === EntryType.FOLDER ? '.zip' : '';
+    const suffix = entry.entry_type === EntryType.FOLDER ? '.zip' : '';
     return `/api/downloads/${(this.getEncodedFullPath(entry))}${suffix}`;
   }
 
