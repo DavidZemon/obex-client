@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {HttpClient} from '@angular/common/http';
+import {APP_BASE_HREF} from '@angular/common';
 
 export enum EntryType {
   FILE = 'FILE',
@@ -33,6 +34,7 @@ const sortTreeEntry = (lhs: TreeEntry, rhs: TreeEntry): number => {
   templateUrl: './tree.component.html'
 })
 export class TreeComponent implements OnInit {
+  readonly baseHref: string;
   tree: TreeEntry[] = [];
 
   readonly treeControl = new NestedTreeControl<TreeEntry>(node => node.children);
@@ -42,7 +44,13 @@ export class TreeComponent implements OnInit {
     tree.filter(e => e.entry_type === EntryType.FOLDER).forEach(e => TreeComponent.sortTree(e.children));
   }
 
-  constructor(private readonly client: HttpClient) {
+  constructor(private readonly client: HttpClient,
+              @Inject(APP_BASE_HREF) baseHref: string) {
+    if (baseHref.endsWith('/')) {
+      this.baseHref = baseHref;
+    } else {
+      this.baseHref = baseHref + '/';
+    }
   }
 
   async ngOnInit(): Promise<void> {

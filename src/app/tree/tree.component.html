@@ -6,7 +6,7 @@
       <button mat-icon-button disabled></button>
       {{node.name}}
       &nbsp;
-      <a title="Preview" [href]="'/preview/' + getEncodedFullPath(node)" target="_blank">
+      <a title="Preview" [href]="baseHref + 'preview/' + getEncodedFullPath(node)" target="_blank">
         <mat-icon>preview</mat-icon>
       </a>
       &nbsp;

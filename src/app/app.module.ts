@@ -15,7 +15,9 @@ import {HomeComponent} from './home/home.component';
 import {RouterModule} from '@angular/router';
 import {AppRoutingModule} from './app-routing.module';
 import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
+import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
 
+// noinspection JSUnusedGlobalSymbols
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +44,11 @@ import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
       useValue: {
         fullLibraryLoader: () => import('highlight.js'),
       }
+    },
+    {
+      provide: APP_BASE_HREF,
+      useFactory: (pl: PlatformLocation) => pl.getBaseHrefFromDOM(),
+      deps: [PlatformLocation]
     }
   ],
   bootstrap: [AppComponent]
