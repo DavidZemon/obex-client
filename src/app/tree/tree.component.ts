@@ -2,21 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {HttpClient} from '@angular/common/http';
 import {APP_BASE_HREF} from '@angular/common';
-
-export enum EntryType {
-  FILE = 'FILE',
-  FOLDER = 'FOLDER',
-  SYMLINK = 'SYMLINK'
-}
-
-export interface TreeEntry {
-  name: string;
-  full_path: string;
-  entry_type: EntryType;
-  size?: number;
-  children?: TreeEntry[];
-  target?: string;
-}
+import {MatDialog} from '@angular/material/dialog';
+import {PreviewDialogComponent} from '../preview/preview-dialog.component';
+import {EntryType, TreeEntry} from '../model/tree';
 
 
 const sortTreeEntry = (lhs: TreeEntry, rhs: TreeEntry): number => {
@@ -45,6 +33,7 @@ export class TreeComponent implements OnInit {
   }
 
   constructor(private readonly client: HttpClient,
+              private readonly dialog: MatDialog,
               @Inject(APP_BASE_HREF) baseHref: string) {
     if (baseHref.endsWith('/')) {
       this.baseHref = baseHref;
@@ -70,4 +59,16 @@ export class TreeComponent implements OnInit {
     return `/api/downloads/${(this.getEncodedFullPath(entry))}${suffix}`;
   }
 
+  openPreview(entry): void {
+    this.dialog.open(
+      PreviewDialogComponent,
+      {
+        maxWidth: '90%',
+        data: {
+          downloadUrl: this.getDownloadPath(entry),
+          entry
+        }
+      }
+    );
+  }
 }

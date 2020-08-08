@@ -1,0 +1,13 @@
+<mat-toolbar>
+  <h1 mat-dialog-title>
+    <code>{{ data.entry.full_path }}</code>
+  </h1>
+  <button mat-button (click)="copy()" matTooltip="Copy to clipboard">
+    <mat-icon>content_copy</mat-icon>
+  </button>
+  <span class="spacer"></span>
+  <button class="close" mat-button (click)="onDismiss()">X</button>
+</mat-toolbar>
+<div mat-dialog-content>
+  <pre><code [highlight]="fileContent"></code></pre>
+</div>

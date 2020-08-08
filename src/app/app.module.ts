@@ -5,25 +5,27 @@ import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {TreeComponent} from './tree/tree.component';
-import {PreviewComponent} from './preview/preview.component';
 import {HomeComponent} from './home/home.component';
 import {RouterModule} from '@angular/router';
 import {AppRoutingModule} from './app-routing.module';
 import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
 import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
+import {MatDialogModule} from '@angular/material/dialog';
+import {PreviewDialogComponent} from './preview/preview-dialog.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 // noinspection JSUnusedGlobalSymbols
 @NgModule({
   declarations: [
     AppComponent,
-    TreeComponent,
-    PreviewComponent,
     HomeComponent,
+    PreviewDialogComponent,
+    TreeComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -32,11 +34,13 @@ import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
     HighlightModule,
     HttpClientModule,
     MatButtonModule,
+    MatDialogModule,
     MatExpansionModule,
     MatIconModule,
     MatTreeModule,
-    NgbModule,
     RouterModule,
+    MatTooltipModule,
+    MatToolbarModule,
   ],
   providers: [
     {

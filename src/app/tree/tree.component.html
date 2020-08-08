@@ -6,12 +6,17 @@
       <button mat-icon-button disabled></button>
       {{node.name}}
       &nbsp;
-      <a title="Preview" [href]="baseHref + 'preview/' + getEncodedFullPath(node)" target="_blank">
-        <mat-icon>preview</mat-icon>
+      <a title="Preview" (click)="openPreview(node)" mat-icon-button matTooltip="Open preview">
+        <mat-icon color="primary">open_in_full</mat-icon>
       </a>
       &nbsp;
-      <a title="Download" [href]="getDownloadPath(node)">
-        <mat-icon>cloud_download</mat-icon>
+      <a title="Open in GitHub" target="_blank" mat-icon-button matTooltip="Open in GitHub"
+         [href]="'https://github.com/ParallaxInc/propeller/blob/master/' + getEncodedFullPath(node)">
+        <mat-icon color="primary">open_in_new</mat-icon>
+      </a>
+      &nbsp;
+      <a title="Download" [href]="getDownloadPath(node)" mat-icon-button matTooltip="Download file">
+        <mat-icon color="primary">cloud_download</mat-icon>
       </a>
     </li>
   </mat-tree-node>
@@ -24,9 +29,10 @@
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        {{node.name}}&nbsp;<a [href]="getDownloadPath(node)">
-        <mat-icon>cloud_download</mat-icon>
-      </a>
+        {{node.name}}&nbsp;
+        <a title="Download" [href]="getDownloadPath(node)" mat-icon-button matTooltip="Download folder">
+          <mat-icon color="primary">cloud_download</mat-icon>
+        </a>
       </div>
       <ul *ngIf="treeControl.isExpanded(node)">
         <ng-container matTreeNodeOutlet></ng-container>

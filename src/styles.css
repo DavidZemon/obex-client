@@ -15,3 +15,7 @@ pre {
   white-space: -o-pre-wrap;
   word-wrap: break-word;
 }
+
+.spacer {
+  flex: 1 1 auto;
+}
