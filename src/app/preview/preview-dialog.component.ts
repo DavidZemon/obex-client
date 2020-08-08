@@ -45,6 +45,6 @@ export class PreviewDialogComponent {
   }
 
   copy(): void {
-    this.clipboard.copy(this.fileContent);
+    this.clipboard.copy(this.fileContent as string);
   }
 }

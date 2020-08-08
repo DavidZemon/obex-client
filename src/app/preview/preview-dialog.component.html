@@ -2,16 +2,26 @@
   <h1 mat-dialog-title>
     <code>{{ data.entry.full_path }}</code>
   </h1>
-  <button mat-button (click)="copy()" matTooltip="Copy to clipboard">
+  <button mat-button (click)="copy()" matTooltip="Copy to clipboard" *ngIf="contentType?.startsWith('text/')">
     <mat-icon>content_copy</mat-icon>
   </button>
   <span class="spacer"></span>
   <button class="close" mat-button (click)="onDismiss()">X</button>
 </mat-toolbar>
 <div mat-dialog-content>
-  <pre *ngIf="contentType.startsWith('text/')"><code [highlight]="fileContent"></code></pre>
-  <img [alt]="data.entry.full_path" *ngIf="contentType.startsWith('image/')" [src]="fileContent">
-  <p *ngIf="!contentType.startsWith('text/') && !contentType.startsWith('image/')">Sorry, the content type
-    "<code>{{ contentType }}</code>" can not yet be displayed. Please try viewing on GitHub.com or downloading the file
-    to your PC.</p>
+  <pre *ngIf="contentType?.startsWith('text/')">
+    <code [highlight]="fileContent"></code>
+  </pre>
+  <img *ngIf="contentType?.startsWith('image/')"
+       [alt]="data.entry.full_path"
+       [src]="fileContent">
+  <pdf-viewer *ngIf="contentType === 'application/pdf'"
+              [src]="fileContent"
+              [autoresize]="true"
+              [original-size]="false">
+  </pdf-viewer>
+  <p
+    *ngIf="!contentType?.startsWith('text/') && !contentType?.startsWith('image/') && contentType !== 'application/pdf'">
+    Sorry, the content type "<code>{{ contentType }}</code>" can not yet be displayed. Please try viewing on GitHub.com
+    or downloading the file to your PC.</p>
 </div>

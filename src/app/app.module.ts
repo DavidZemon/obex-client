@@ -16,8 +16,9 @@ import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
 import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
 import {MatDialogModule} from '@angular/material/dialog';
 import {PreviewDialogComponent} from './preview/preview-dialog.component';
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
 
 // noinspection JSUnusedGlobalSymbols
 @NgModule({
@@ -37,10 +38,11 @@ import {MatToolbarModule} from "@angular/material/toolbar";
     MatDialogModule,
     MatExpansionModule,
     MatIconModule,
-    MatTreeModule,
-    RouterModule,
-    MatTooltipModule,
     MatToolbarModule,
+    MatTooltipModule,
+    MatTreeModule,
+    PdfViewerModule,
+    RouterModule,
   ],
   providers: [
     {
