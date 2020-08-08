@@ -15,17 +15,28 @@ export interface PreviewDialogData {
 })
 export class PreviewDialogComponent {
 
-  fileContent?: string;
+  contentType?: string;
+  fileContent?: string | ArrayBuffer;
 
   constructor(private readonly dialogRef: MatDialogRef<PreviewDialogComponent>,
               private readonly client: HttpClient,
               private readonly clipboard: Clipboard,
               @Inject(MAT_DIALOG_DATA) public readonly data: PreviewDialogData) {
-    this.client.get<string>(
+    this.client.get<Blob>(
       this.data.downloadUrl,
-      {responseType: 'text' as 'json'}
-    ).toPromise().then((content) => {
-      this.fileContent = content;
+      {
+        responseType: 'blob' as 'json',
+        observe: 'response'
+      }
+    ).toPromise().then((response) => {
+      this.contentType = response.headers.get('Content-Type');
+      if (this.contentType.startsWith('text/')) {
+        response.body.text().then((t) => this.fileContent = t);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => this.fileContent = e.target.result;
+        reader.readAsDataURL(response.body);
+      }
     });
   }
 

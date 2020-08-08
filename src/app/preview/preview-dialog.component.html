@@ -9,5 +9,9 @@
   <button class="close" mat-button (click)="onDismiss()">X</button>
 </mat-toolbar>
 <div mat-dialog-content>
-  <pre><code [highlight]="fileContent"></code></pre>
+  <pre *ngIf="contentType.startsWith('text/')"><code [highlight]="fileContent"></code></pre>
+  <img [alt]="data.entry.full_path" *ngIf="contentType.startsWith('image/')" [src]="fileContent">
+  <p *ngIf="!contentType.startsWith('text/') && !contentType.startsWith('image/')">Sorry, the content type
+    "<code>{{ contentType }}</code>" can not yet be displayed. Please try viewing on GitHub.com or downloading the file
+    to your PC.</p>
 </div>
