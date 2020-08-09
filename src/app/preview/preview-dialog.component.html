@@ -9,9 +9,10 @@
   <button class="close" mat-button (click)="onDismiss()">X</button>
 </mat-toolbar>
 <div mat-dialog-content>
-  <pre *ngIf="contentType?.startsWith('text/')">
-    <code [highlight]="fileContent"></code>
-  </pre>
+  <pre *ngIf="contentType?.startsWith('text/') && !data.entry.name.endsWith('.md')"><code [highlight]="fileContent"
+                                                                                          [lineNumbers]="true"></code></pre>
+  <markdown *ngIf="contentType?.startsWith('text/') && data.entry.name.endsWith('.md')"
+            ngPreserveWhitespaces [data]="fileContent"></markdown>
   <img *ngIf="contentType?.startsWith('image/')"
        [alt]="data.entry.full_path"
        [src]="fileContent">
