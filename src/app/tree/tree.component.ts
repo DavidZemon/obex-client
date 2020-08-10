@@ -17,6 +17,24 @@ const sortTreeEntry = (lhs: TreeEntry, rhs: TreeEntry): number => {
   }
 };
 
+const getSymlinkChildren = (link: TreeEntry): TreeEntry[] | null => {
+  const targetParts = link.target.split('/');
+  let nextList: TreeEntry[] = link.current_listing;
+  for (const part of targetParts) {
+    if ('..' === part) {
+      nextList = nextList[0].parent_listing;
+    } else if ('.' !== part) {
+      nextList = nextList.find((e) => e.name === part)?.children;
+    }
+
+    if (!nextList) {
+      return null;
+    }
+  }
+  link.children = nextList;
+  return link.children;
+};
+
 @Component({
   selector: 'app-tree',
   templateUrl: './tree.component.html'
@@ -25,7 +43,7 @@ export class TreeComponent implements OnInit {
   readonly baseHref: string;
   tree: TreeEntry[] = [];
 
-  readonly treeControl = new NestedTreeControl<TreeEntry>(node => node.children);
+  readonly treeControl;
 
   private static sortTree(tree: TreeEntry[]): void {
     tree.sort(sortTreeEntry);
@@ -40,14 +58,53 @@ export class TreeComponent implements OnInit {
     } else {
       this.baseHref = baseHref + '/';
     }
+
+    this.treeControl = new NestedTreeControl<TreeEntry>((node) => {
+      if (null === node.children && node.entry_type === 'FOLDER') {
+        const observable = this.client.get<TreeEntry[]>(
+          '/api/tree/',
+          {
+            params: {
+              depth: '1',
+              root: this.getEncodedFullPath(node)
+            }
+          }
+        );
+        observable.subscribe(children => node.children = children);
+        return observable;
+      } else {
+        return node.children;
+      }
+    });
   }
 
-  async ngOnInit(): Promise<void> {
-    TreeComponent.sortTree(this.tree = await this.client.get<TreeEntry[]>('/api/tree/').toPromise());
+  ngOnInit(): void {
+    this.client.get<TreeEntry[]>(
+      '/api/tree/',
+      {params: {/* depth: '1'} */}},
+    ).forEach((tree) => {
+      TreeComponent.sortTree(this.tree = tree);
+      const fleshOutCurrentAndParent = (directoryEntries: TreeEntry[], parent: TreeEntry[] | null) => {
+        directoryEntries.forEach(e => {
+          if ('FOLDER' === e.entry_type) {
+            fleshOutCurrentAndParent(e.children, directoryEntries);
+          }
+          e.parent_listing = parent;
+          e.current_listing = directoryEntries;
+        });
+      };
+      fleshOutCurrentAndParent(this.tree, null);
+    }).catch((e) => console.error(e));
   }
 
   hasChild(_: number, entry: TreeEntry): boolean {
-    return !!entry.children;
+    if (entry.entry_type === 'FOLDER') {
+      return true;
+    } else if (entry.entry_type === 'SYMLINK') {
+      return getSymlinkChildren(entry) !== null;
+    } else {
+      return false;
+    }
   }
 
   getEncodedFullPath(entry: TreeEntry): string {
