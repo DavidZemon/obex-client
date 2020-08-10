@@ -28,7 +28,7 @@ export class PreviewDialogComponent {
         responseType: 'blob' as 'json',
         observe: 'response'
       }
-    ).toPromise().then((response) => {
+    ).forEach(response => {
       this.contentType = response.headers.get('Content-Type');
       if (this.contentType.startsWith('text/')) {
         response.body.text().then((t) => this.fileContent = t);
@@ -37,7 +37,7 @@ export class PreviewDialogComponent {
         reader.onload = (e) => this.fileContent = e.target.result;
         reader.readAsDataURL(response.body);
       }
-    });
+    }).catch((e) => console.error(e));
   }
 
   onDismiss(): void {
