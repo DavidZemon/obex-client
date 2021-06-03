@@ -112,7 +112,7 @@ export class TreeComponent implements OnInit {
   }
 
   getDownloadPath(entry: TreeEntry): string {
-    const suffix = entry.entry_type === EntryType.FOLDER ? '.zip' : '';
+    const suffix = this.hasChild(null, entry) ? '.zip' : '';
     return `/api/downloads/${(this.getEncodedFullPath(entry))}${suffix}`;
   }
 
