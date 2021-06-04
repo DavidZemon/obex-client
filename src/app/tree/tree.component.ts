@@ -1,14 +1,16 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {NestedTreeControl} from '@angular/cdk/tree';
-import {HttpClient} from '@angular/common/http';
-import {APP_BASE_HREF} from '@angular/common';
-import {MatDialog} from '@angular/material/dialog';
-import {PreviewDialogComponent} from '../preview/preview-dialog.component';
-import {EntryType, TreeEntry} from '../model/tree';
-
+import { Component, Inject, OnInit } from '@angular/core';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { HttpClient } from '@angular/common/http';
+import { APP_BASE_HREF } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { PreviewDialogComponent } from '../preview/preview-dialog.component';
+import { EntryType, TreeEntry } from '../model/tree';
 
 const sortTreeEntry = (lhs: TreeEntry, rhs: TreeEntry): number => {
-  if (lhs.entry_type === rhs.entry_type || (lhs.entry_type !== EntryType.FOLDER && rhs.entry_type !== EntryType.FOLDER)) {
+  if (
+    lhs.entry_type === rhs.entry_type ||
+    (lhs.entry_type !== EntryType.FOLDER && rhs.entry_type !== EntryType.FOLDER)
+  ) {
     return lhs.name.localeCompare(rhs.name);
   } else if (lhs.entry_type === EntryType.FOLDER) {
     return -1;
@@ -37,7 +39,7 @@ const getSymlinkChildren = (link: TreeEntry): TreeEntry[] | null => {
 
 @Component({
   selector: 'app-tree',
-  templateUrl: './tree.component.html'
+  templateUrl: './tree.component.html',
 })
 export class TreeComponent implements OnInit {
   readonly baseHref: string;
@@ -47,12 +49,16 @@ export class TreeComponent implements OnInit {
 
   private static sortTree(tree: TreeEntry[]): void {
     tree.sort(sortTreeEntry);
-    tree.filter(e => e.entry_type === EntryType.FOLDER).forEach(e => TreeComponent.sortTree(e.children));
+    tree
+      .filter((e) => e.entry_type === EntryType.FOLDER)
+      .forEach((e) => TreeComponent.sortTree(e.children));
   }
 
-  constructor(private readonly client: HttpClient,
-              private readonly dialog: MatDialog,
-              @Inject(APP_BASE_HREF) baseHref: string) {
+  constructor(
+    private readonly client: HttpClient,
+    private readonly dialog: MatDialog,
+    @Inject(APP_BASE_HREF) baseHref: string,
+  ) {
     if (baseHref.endsWith('/')) {
       this.baseHref = baseHref;
     } else {
@@ -61,16 +67,13 @@ export class TreeComponent implements OnInit {
 
     this.treeControl = new NestedTreeControl<TreeEntry>((node) => {
       if (null === node.children && node.entry_type === 'FOLDER') {
-        const observable = this.client.get<TreeEntry[]>(
-          '/api/tree/',
-          {
-            params: {
-              depth: '1',
-              root: this.getEncodedFullPath(node)
-            }
-          }
-        );
-        observable.subscribe(children => node.children = children);
+        const observable = this.client.get<TreeEntry[]>('/api/tree/', {
+          params: {
+            depth: '1',
+            root: this.getEncodedFullPath(node),
+          },
+        });
+        observable.subscribe((children) => (node.children = children));
         return observable;
       } else {
         return node.children;
@@ -79,22 +82,25 @@ export class TreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.client.get<TreeEntry[]>(
-      '/api/tree/',
-      {params: {/* depth: '1'} */}},
-    ).forEach((tree) => {
-      TreeComponent.sortTree(this.tree = tree);
-      const fleshOutCurrentAndParent = (directoryEntries: TreeEntry[], parent: TreeEntry[] | null) => {
-        directoryEntries.forEach(e => {
-          if ('FOLDER' === e.entry_type) {
-            fleshOutCurrentAndParent(e.children, directoryEntries);
-          }
-          e.parent_listing = parent;
-          e.current_listing = directoryEntries;
-        });
-      };
-      fleshOutCurrentAndParent(this.tree, null);
-    }).catch((e) => console.error(e));
+    this.client
+      .get<TreeEntry[]>('/api/tree')
+      .forEach((tree) => {
+        TreeComponent.sortTree((this.tree = tree));
+        const fleshOutCurrentAndParent = (
+          directoryEntries: TreeEntry[],
+          parent: TreeEntry[] | null,
+        ) => {
+          directoryEntries.forEach((e) => {
+            if ('FOLDER' === e.entry_type) {
+              fleshOutCurrentAndParent(e.children, directoryEntries);
+            }
+            e.parent_listing = parent;
+            e.current_listing = directoryEntries;
+          });
+        };
+        fleshOutCurrentAndParent(this.tree, null);
+      })
+      .catch((e) => console.error(e));
   }
 
   hasChild(_: number, entry: TreeEntry): boolean {
@@ -113,19 +119,16 @@ export class TreeComponent implements OnInit {
 
   getDownloadPath(entry: TreeEntry): string {
     const suffix = this.hasChild(null, entry) ? '.zip' : '';
-    return `/api/downloads/${(this.getEncodedFullPath(entry))}${suffix}`;
+    return `/api/downloads/${this.getEncodedFullPath(entry)}${suffix}`;
   }
 
   openPreview(entry): void {
-    this.dialog.open(
-      PreviewDialogComponent,
-      {
-        maxWidth: '90%',
-        data: {
-          downloadUrl: this.getDownloadPath(entry),
-          entry
-        }
-      }
-    );
+    this.dialog.open(PreviewDialogComponent, {
+      maxWidth: '90%',
+      data: {
+        downloadUrl: this.getDownloadPath(entry),
+        entry,
+      },
+    });
   }
 }

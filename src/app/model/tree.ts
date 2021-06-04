@@ -1,7 +1,7 @@
 export enum EntryType {
   FILE = 'FILE',
   FOLDER = 'FOLDER',
-  SYMLINK = 'SYMLINK'
+  SYMLINK = 'SYMLINK',
 }
 
 export interface TreeEntry {
