@@ -1,7 +1,7 @@
 FROM node:lts-slim as builder
 COPY package.json /opt/app/package.json
-COPY package-lock.json /opt/app/package-lock.json
-RUN cd /opt/app && npm install
+COPY yarn.lock /opt/app/yarn.lock
+RUN cd /opt/app && yarn install
 COPY . /opt/app
 RUN cd /opt/app && npm run build -- --configuration production
 
